@@ -16,4 +16,10 @@ Purpose: Showcasing Semicon's revenue-wise yearly performance
 
 **Live Dashboard Link:** [Click Here](https://public.tableau.com/views/SemiconSalesAnalysisDashboard/ExecutiveOverview?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link)
 
+## Tools & Languages Used
+
+* Python & Jupyter Notebook - Data Cleaning
+* Microsoft Excel - Data Organisation in a single workbook
+* Tableau - Data Analysis & Visualisation
+
 ## Background
