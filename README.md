@@ -18,8 +18,8 @@ Purpose: Showcasing Semicon's revenue-wise yearly performance
 
 ## Tools & Languages Used
 
-* Python & Jupyter Notebook - Data Cleaning
-* Microsoft Excel - Data Organisation in a single workbook
-* Tableau - Data Analysis & Visualisation
+* **Python & Jupyter Notebook** - Data Cleaning & Transformation
+* **Microsoft Excel** - Data Organisation (Compiling each of the .csv files as separate sheets in a single workbook)
+* **Tableau** - Data Analysis & Visualisation
 
 ## Background
