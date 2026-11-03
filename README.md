@@ -20,7 +20,7 @@ Purpose: Showcasing Semicon's revenue-wise yearly performance
 
 * **Python & Jupyter Notebook** - Data Cleaning & Transformation
 * **Microsoft Excel** - Data Organisation (Compiling each of the .csv files as separate sheets in a single workbook)
-* **Tableau** - Data Analysis & Visualisation
+* **Tableau** - Data Analysis, Visualisation & Storytelling
 
 ## Background
 
@@ -41,6 +41,136 @@ Semicon sells computer hardware products through a customer base that includes b
 * Transactions include non-positive sales amounts and multiple currency codes. These records and currency conversions need documented rules.
 * Business users need an executive overview as well as a separate view of monthly and year-level trends.
 * The Tableau headline revenue measure multiplies converted sales amount by quantity, while several comparison charts sum converted sales amount. The intended business definition and calculation basis need to be reconciled.
+
+## Data Cleaning in Jupyter Notebook (Python)
+
+### Importing all the necessary libraries
+```python
+import pandas as pd
+import numpy as np
+from pathlib import Path
+```
+
+### Setting up file paths
+```python
+# This notebook is inside the same Dataset folder so I'll use:
+
+DATA_DIR = Path.cwd()
+
+# I'll save all the clean .csv files in a new file:
+
+OUTPUT_DIR = DATA_DIR / "cleaned_csv"
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+# Let me give them short names for ease:
+
+files = {
+    "customers": DATA_DIR / "semicon_customers.csv",
+    "date": DATA_DIR / "semicon_date.csv",
+    "markets": DATA_DIR / "semicon_markets.csv",
+    "products": DATA_DIR / "semicon_products_named.csv",
+    "transactions": DATA_DIR / "semicon_transactions.csv",
+}
+```
+
+### Loading the files
+
+#### **customers**
+```python
+customers = pd.read_csv(files["customers"])
+customers.head()
+```
+
+```python
+# Understanding customers table structure
+
+customers.info()
+```
+
+#### **date**
+```python
+date_dim = pd.read_csv(files["date"])
+date_dim.head()
+```
+
+```python
+# Understanding date_dim table structure
+
+date_dim.info()
+```
+
+#### **markets**
+```python
+markets = pd.read_csv(files["markets"])
+markets.head()
+```
+
+```python
+# Understanding markets table structure
+
+markets.info()
+```
+
+#### **products**
+```python
+products = pd.read_csv(files["products"])
+products.head()
+```
+
+```python
+# Understanding products table structure
+
+products.info()
+```
+
+#### **transactions**
+```python
+transactions = pd.read_csv(files["transactions"])
+transactions.head()
+```
+
+```python
+# Understanding transactions table structure
+
+transactions.info()
+```
+
+### Creating some helper functions for ease & time-saving
+```python
+# Function 1:
+
+def clean_text_columns(df):
+    """Strip whitespace and remove hidden carriage returns/newlines from text columns."""
+    df = df.copy()
+    text_cols = df.select_dtypes(include=["object", "string"]).columns
+    
+    for col in text_cols:
+        df[col] = (
+            df[col]
+            .astype("string")
+            .str.replace("\r", "", regex=False)
+            .str.replace("\n", " ", regex=False)
+            .str.strip()
+        )
+    
+    return df
+
+# Function 2:
+
+def basic_profile(df, name):
+    """Quick data quality profile."""
+    print(f"\n{name}")
+    print("-" * len(name))
+    print("Shape:", df.shape)
+    print("\nMissing values:")
+    print(df.isna().sum())
+    print("\nDuplicate rows:", df.duplicated().sum())
+    print("\nData types:")
+    print(df.dtypes)
+```
+
+### Displaying a quick profile of all tables
+
 
 ## Data Model
 
