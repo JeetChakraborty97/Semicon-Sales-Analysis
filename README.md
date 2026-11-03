@@ -170,9 +170,216 @@ def basic_profile(df, name):
 ```
 
 ### Displaying a quick profile of all tables
+```python
+for name, df in {
+    "customers": customers,
+    "date_dim": date_dim,
+    "markets": markets,
+    "products": products,
+    "transactions": transactions,
+}.items():
+    basic_profile(df, name)
+```
 
+### Data cleaning for **customers** table
+```python
+# Cleaning customers table with function:
 
-## Data Model
+customers_clean = clean_text_columns(customers)
+
+# Fixing column typo:
+customers_clean = customers_clean.rename(columns={
+    "custmer_name": "customer_name"
+})
+
+# Removing exact duplicates, if any:
+customers_clean = customers_clean.drop_duplicates().reset_index(drop=True)
+
+# Validating important columns:
+assert customers_clean["customer_code"].isna().sum() == 0
+assert customers_clean["customer_code"].duplicated().sum() == 0
+
+customers_clean.head()
+```
+
+### Data cleaning for **date_dim** table
+```python
+# Cleaning date_dim table with function:
+
+date_clean = clean_text_columns(date_dim)
+
+# Converting date_dim columns to real datetime values:
+
+date_clean["date"] = pd.to_datetime(date_clean["date"], errors="coerce")
+date_clean["cy_date"] = pd.to_datetime(date_clean["cy_date"], errors="coerce")
+
+# Rebuilding date helper columns to remove hidden characters and ensuring consistency:
+
+date_clean["year"] = date_clean["date"].dt.year
+date_clean["month_name"] = date_clean["date"].dt.month_name()
+date_clean["cy_date"] = date_clean["date"].values.astype("datetime64[M]")
+date_clean["date_yy_mmm"] = date_clean["date"].dt.strftime("%y-%b")
+
+# Removing duplicates:
+
+date_clean = date_clean.drop_duplicates().reset_index(drop=True)
+
+# Validating:
+
+assert date_clean["date"].isna().sum() == 0
+assert date_clean["date"].duplicated().sum() == 0
+
+date_clean.head()
+```
+
+### Data cleaning for **markets** tabel
+```python
+# Cleaning markets table with function:
+
+markets_clean = clean_text_columns(markets)
+
+# Renaming to match transactions table
+
+markets_clean = markets_clean.rename(columns={
+    "markets_code": "market_code"
+})
+
+# Filling missing zones for international markets
+
+markets_clean["zone"] = markets_clean["zone"].fillna("International")
+
+# Removing duplicates
+
+markets_clean = markets_clean.drop_duplicates().reset_index(drop=True)
+
+# Validating
+
+assert markets_clean["market_code"].isna().sum() == 0
+assert markets_clean["market_code"].duplicated().sum() == 0
+
+markets_clean.head()
+```
+
+### Data cleaning for **products** table
+```python
+# Cleaning products table:
+
+products_clean = clean_text_columns(products)
+
+# Removing duplicates:
+
+products_clean = products_clean.drop_duplicates().reset_index(drop=True)
+
+# Validating:
+
+assert products_clean["product_code"].isna().sum() == 0
+assert products_clean["product_code"].duplicated().sum() == 0
+
+products_clean.head()
+```
+
+### Data cleaning for **transactions** table
+```python
+# Cleaning transactions table:
+
+transactions_clean = clean_text_columns(transactions)
+
+# Converting date and numeric columns:
+
+transactions_clean["order_date"] = pd.to_datetime(
+    transactions_clean["order_date"], 
+    errors="coerce"
+)
+
+transactions_clean["sales_qty"] = pd.to_numeric(
+    transactions_clean["sales_qty"], 
+    errors="coerce"
+)
+
+transactions_clean["sales_amount"] = pd.to_numeric(
+    transactions_clean["sales_amount"], 
+    errors="coerce"
+)
+
+# Standardising currency:
+
+transactions_clean["currency"] = transactions_clean["currency"].str.upper()
+
+# Removing exact duplicates after text cleanup:
+
+transactions_clean = transactions_clean.drop_duplicates().reset_index(drop=True)
+
+# Removing invalid rows:
+
+transactions_clean = transactions_clean[
+    (transactions_clean["order_date"].notna()) &
+    (transactions_clean["sales_qty"] > 0) &
+    (transactions_clean["sales_amount"] > 0)
+].copy()
+
+transactions_clean.head()
+```
+```python
+# Converting all sales amount values to INR:
+
+USD_TO_INR = 96
+
+transactions_clean["sales_amount_original"] = transactions_clean["sales_amount"]
+transactions_clean["currency_original"] = transactions_clean["currency"]
+
+transactions_clean["sales_amount_inr"] = np.where(
+    transactions_clean["currency"] == "USD",
+    transactions_clean["sales_amount"] * USD_TO_INR,
+    transactions_clean["sales_amount"]
+)
+
+transactions_clean["currency"] = "INR"
+
+transactions_clean.head()
+```
+
+### Checking relationships across tables
+```python
+missing_products = set(transactions_clean["product_code"]) - set(products_clean["product_code"])
+missing_customers = set(transactions_clean["customer_code"]) - set(customers_clean["customer_code"])
+missing_markets = set(transactions_clean["market_code"]) - set(markets_clean["market_code"])
+missing_dates = set(transactions_clean["order_date"]) - set(date_clean["date"])
+
+print("Missing product codes:", missing_products)
+print("Missing customer codes:", missing_customers)
+print("Missing market codes:", missing_markets)
+print("Missing dates:", missing_dates)
+
+assert len(missing_products) == 0
+assert len(missing_customers) == 0
+assert len(missing_markets) == 0
+assert len(missing_dates) == 0
+```
+
+### Final profiling after cleaning
+```python
+for name, df in {
+    "customers_clean": customers_clean,
+    "date_clean": date_clean,
+    "markets_clean": markets_clean,
+    "products_clean": products_clean,
+    "transactions_clean": transactions_clean,
+}.items():
+    basic_profile(df, name)
+```
+
+### Exporting the files
+```python
+customers_clean.to_csv(OUTPUT_DIR / "semicon_customers_clean.csv", index=False)
+date_clean.to_csv(OUTPUT_DIR / "semicon_date_clean.csv", index=False)
+markets_clean.to_csv(OUTPUT_DIR / "semicon_markets_clean.csv", index=False)
+products_clean.to_csv(OUTPUT_DIR / "semicon_products_named_clean.csv", index=False)
+transactions_clean.to_csv(OUTPUT_DIR / "semicon_transactions_clean.csv", index=False)
+
+print(f"Cleaned CSV files exported to: {OUTPUT_DIR}")
+```
+
+## Data Model (Tableau)
 
 <img width="605" height="389" alt="Data Model" src="https://github.com/user-attachments/assets/86ebe90c-5bef-49e0-8b18-0d7a987565e1" />
 
