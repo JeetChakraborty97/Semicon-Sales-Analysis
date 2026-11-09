@@ -2,13 +2,13 @@
 
 ## Executive Overview Dashboard
 
-<img width="1600" height="905" alt="Dashboard 1 - Executive Overview" src="https://github.com/user-attachments/assets/7e525f0d-754b-4f30-8494-768fd10f9b2a" />
+<img width="1595" height="901" alt="Dashboard 1 - Executive Overview" src="https://github.com/user-attachments/assets/2a83a08b-b2e6-4bcb-955a-b77967aae45c" />
 
 Purpose: Key details for Stakeholders
 
 ## Yearly Growth Dashboard
 
-<img width="1601" height="900" alt="Dashboard 2 - Yearly Growth" src="https://github.com/user-attachments/assets/5519b7e1-75b4-4449-ad7c-ebb801e8ae73" />
+<img width="1596" height="898" alt="Dashboard 2 - Yearly Growth" src="https://github.com/user-attachments/assets/643addee-3f63-43a7-886f-0e3ddee961b6" />
 
 Purpose: Showcasing Semicon's revenue-wise yearly performance
 
