@@ -397,14 +397,5 @@ The top product in the sales-amount ranking is the Semicon Vortex V9-1200K Unloc
 ### Monthly and Annual Pattern
 The monthly line chart shows its highest point in January 2018 at about INR 17.4M, followed by lower and uneven monthly results. A later high occurs in July 2019 at about INR 11.9M, while June 2020 is about INR 4.5M. Comparing complete years, converted sales amount falls from INR 123.35M in 2018 to INR 110.04M in 2019. The chart describes changes over time but does not explain their causes.
 
-## Recommendations
-
-* Reconcile the revenue definition first. Confirm the source meaning of sales_amount, then use one calculation and unit for every revenue KPI, trend and ranking. Add a reconciliation check to the workbook.
-* Protect and review the largest accounts, beginning with Electricalsara Stores, and examine customer-level contribution over time to monitor concentration.
-* Compare market sales value and unit volume together. Prioritise follow-up in leading markets such as Delhi NCR and Mumbai while reviewing lower-activity markets with local context.
-* Review availability, pricing and promotion for the leading CPU and RAM products. The sales data identifies leaders but does not show inventory, margin or stock-out constraints.
-* Investigate the 2018-2019 decline and uneven monthly changes with additional business context. Do not attribute the pattern to a cause based on this dashboard alone.
-* Label partial years and the 96 INR/USD fixed conversion assumption directly in the report, and refresh the exchange rate when the analysis is updated.
-
 ## Conclusion
 The project establishes a useful sales reporting foundation: cleaned transactions, linked product/customer/market/date dimensions, and dashboards that expose market, customer, product and time patterns. Its strongest immediate improvement is to reconcile and label the sales-value calculation. Once that is resolved, the dashboard can give leadership a consistent basis for monitoring sales performance and choosing where to investigate further.
